@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate - AI Academic Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Arial', sans-serif;
+        }
+        .animate-fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        canvas {
+            border: 2px solid #ccc;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 text-white p-6">
+    <div class="max-w-6xl mx-auto bg-white text-gray-800 rounded-lg shadow-lg p-8 animate-fade-in">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-blue-600 mb-2">Welcome to StudyMate</h1>
+            <p class="text-lg">Your AI-powered academic assistant for interactive study materials.</p>
+            <p class="text-sm text-gray-600">Upload PDFs, ask questions, get explanations, watch visualizations, review Q&A, and take quizzes!</p>
+        </header>
+
+        <!-- Upload Section -->
+        <section id="upload" class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Upload Study Materials</h2>
+            <input type="file" id="pdfUpload" accept=".pdf" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100" />
+            <p class="mt-2 text-sm text-gray-600">"Sample Topic Loaded: Photosynthesis (Simulated from uploaded PDF)"</p>
+            <button id="processBtn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Process and Load Content</button>
+        </section>
+
+        <!-- Chatbot Section -->
+        <section id="chatbot" class="mb-8 animate-fade-in" style="display:none;">
+            <h2 class="text-2xl font-semibold mb-4">Ask Questions (Q&A Chat)</h2>
+            <div id="chat" class="bg-gray-100 p-4 rounded h-64 overflow-y-auto mb-4"></div>
+            <input type="text" id="question" placeholder="Ask about the topic..." class="w-full p-2 border rounded" />
+            <button id="askBtn" class="mt-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Ask</button>
+        </section>
+
+        <!-- Explanation Section -->
+        <section id="explanation" class="mb-8 animate-fade-in" style="display:none;">
+            <h2 class="text-2xl font-semibold mb-4">Detailed Explanation</h2>
+            <div class="bg-blue-50 p-4 rounded">
+                <h3 class="font-bold">Photosynthesis</h3>
+                <p>Photosynthesis is the process by which green plants and some other organisms use sunlight to synthesize foods from carbon dioxide and water. It occurs in two stages: light-dependent reactions and light-independent reactions (Calvin cycle). This essential process not only provides energy for plants but also releases oxygen into the atmosphere, supporting life on Earth. Key players include chlorophyll in chloroplasts, absorbing light energy.</p>
+                <p><strong>Reference:</strong> Simulated from uploaded PDF (Chapter 1, Page 5).</p>
+            </div>
+        </section>
+
+        <!-- Animated Video Section -->
+        <section id="video" class="mb-8 animate-fade-in" style="display:none;">
+            <h2 class="text-2xl font-semibold mb-4">Visual Animation</h2>
+            <p>Watch this interactive animation visualizing photosynthesis: Sunlight hits a leaf, triggering reactions that produce glucose and oxygen.</p>
+            <canvas id="photoCanvas" width="600" height="400" class="mx-auto"></canvas>
+        </section>
+
+        <!-- Q&A Section -->
+        <section id="qa" class="mb-8 animate-fade-in" style="display:none;">
+            <h2 class="text-2xl font-semibold mb-4">Important Questions & Answers</h2>
+            <div class="space-y-4">
+                <div>
+                    <strong>Q: What is photosynthesis?</strong><br>
+                    <em>A:</em> Photosynthesis is the process plants use to convert light energy into chemical energy, producing glucose and oxygen.
+                </div>
+                <div>
+                    <strong>Q: What are the stages of photosynthesis?</strong><br>
+                    <em>A:</em> Light-dependent reactions (in thylakoids) and light-independent reactions (Calvin cycle in stroma).
+                </div>
+                <div>
+                    <strong>Q: Why is photosynthesis important?</strong><br>
+                    <em>A:</em> It produces food for plants, releases oxygen, and forms the base of most food chains.
+                </div>
+                <div>
+                    <strong>Q: Where does photosynthesis occur?</strong><br>
+                    <em>A:</em> Primarily in the chloroplasts of leaf cells.
+                </div>
+                <div>
+                    <strong>Q: What inputs are needed for photosynthesis?</strong><br>
+                    <em>A:</em> Carbon dioxide, water, and sunlight.
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz" class="mb-8 animate-fade-in" style="display:none;">
+            <h2 class="text-2xl font-semibold mb-4">Interactive Quiz</h2>
+            <div id="questionDiv">
+                <p id="quizQuestion"></p>
+                <div>
+                    <button class="option btn p-2 border rounded bg-gray-200 hover:bg-gray-300 mr-2" data-answer="A"></button>
+                    <button class="option btn p-2 border rounded bg-gray-200 hover:bg-gray-300 mr-2" data-answer="B"></button>
+                    <button class="option btn p-2 border rounded bg-gray-200 hover:bg-gray-300 mr-2" data-answer="C"></button>
+                    <button class="option btn p-2 border rounded bg-gray-200 hover:bg-gray-300" data-answer="D"></button>
+                </div>
+            </div>
+            <p id="quizResult" class="mt-4"></p>
+            <button id="nextQuestion" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Next Question</button>
+        </section>
+    </div>
+
+    <script>
+        // Simulate PDF Processing
+        const processBtn = document.getElementById('processBtn');
+        const upload = document.getElementById('upload');
+        processBtn.addEventListener('click', () => {
+            alert('PDF processed! (Simulation)');
+            document.getElementById('chatbot').style.display = 'block';
+            document.getElementById('explanation').style.display = 'block';
+            document.getElementById('video').style.display = 'block';
+            document.getElementById('qa').style.display = 'block';
+            document.getElementById('quiz').style.display = 'block';
+            upload.style.display = 'none';
+            initAnimation();
+            initQuiz();
+        });
+
+        // Chatbot Simulation
+        const chat = document.getElementById('chat');
+        const questionInput = document.getElementById('question');
+        const askBtn = document.getElementById('askBtn');
+        askBtn.addEventListener('click', () => {
+            const q = questionInput.value;
+            if (q) {
+                chat.innerHTML += <p><strong>You:</strong> ${q}</p>;
+                chat.innerHTML += <p><strong>StudyMate:</strong> ${getAnswer(q)} (Referenced from PDF, Page 5)</p>;
+                questionInput.value = '';
+                chat.scrollTop = chat.scrollHeight;
+            }
+        });
+
+        function getAnswer(q) {
+            const questions = [
+                { key: 'what is photosynthesis', ans: 'It\'s the process where plants make food using sunlight.' },
+                { key: 'stages', ans: 'Light reactions and Calvin cycle.' }
+            ];
+            const match = questions.find(qa => q.toLowerCase().includes(qa.key));
+            return match ? match.ans : 'Default answer based on material.';
+        }
+
+        // Animation
+        function initAnimation() {
+            const canvas = document.getElementById('photoCanvas');
+            const ctx = canvas.getContext('2d');
+            let angle = 0;
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // Sun
+                ctx.fillStyle = 'yellow';
+                ctx.beginPath();
+                ctx.arc(100, 50, 30, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.closePath();
+                // Rays
+                for (let i = 0; i < 8; i++) {
+                    const x = 100 + 50 * Math.cos(angle + i * Math.PI / 4);
+                    const y = 50 + 50 * Math.sin(angle + i * Math.PI / 4);
+                    ctx.beginPath();
+                    ctx.moveTo(100, 50);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                }
+                // Leaf
+                ctx.fillStyle = 'green';
+                ctx.fillRect(400, 250, 100, 50);
+                ctx.fillStyle = 'blue';
+                ctx.fillRect(425, 275, 50, 20); // Water
+                ctx.fillStyle = 'gray';
+                ctx.beginPath();
+                ctx.arc(550, 200, 20, 0, Math.PI * 2); // Oxygen
+                ctx.fill();
+                angle += 0.05;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // Quiz
+        function initQuiz() {
+            const questions = [
+                {
+                    q: 'What is the primary product of photosynthesis?',
+                    options: ['Glucose', 'Oxygen', 'Carbon dioxide', 'Protein'],
+                    correct: 'A'
+                },
+                {
+                    q: 'In which part of the cell does photosynthesis occur?',
+                    options: ['Mitochondria', 'Chloroplast', 'Nucleus', 'Ribosome'],
+                    correct: 'B'
+                },
+                {
+                    q: 'What energy source powers photosynthesis?',
+                    options: ['Wind', 'Water', 'Sunlight', 'Electricity'],
+                    correct: 'C'
+                }
+            ];
+            let current = 0;
+            const nextBtn = document.getElementById('nextQuestion');
+            nextBtn.addEventListener('click', () => {
+                current = (current + 1) % questions.length;
+                displayQuestion(current);
+                document.getElementById('quizResult').textContent = '';
+            });
+            displayQuestion(current);
+
+            function displayQuestion(idx) {
+                const q = questions[idx];
+                document.getElementById('quizQuestion').textContent = q.q;
+                const options = document.querySelectorAll('.option');
+                options.forEach((btn, i) => {
+                    btn.textContent = q.options[i];
+                    btn.onclick = () => checkAnswer(q.correct, btn.dataset.answer);
+                });
+            }
+
+            function checkAnswer(correct, selected) {
+                const result = document.getElementById('quizResult');
+                result.textContent = selected === correct ? 'Correct!' : 'Incorrect. Try again.';
+                result.style.color = selected === correct ? 'green' : 'red';
+            }
+        }
+    </script>
+</body>
+</html>
